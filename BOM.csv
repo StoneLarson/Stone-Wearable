@@ -1,0 +1,8 @@
+Part,Qty used,Purpose,Approx cost (USD),Notes
+Seeed XIAO nRF52840 Sense,1,MCU + BLE + built-in LSM6DS3 IMU,25-35 (3-pack),Male headers soldered to castellated pads
+MAX30102 breakout,1,PPG sensor (red + IR LEDs + photodiode),12-18 (2-pack),On-board 4.7k I2C pull-ups; I2C address 0x57
+Li-Po battery 3.7V 500mAh (503030),1,Power (~7 h estimated),8-12,2-wire JST connector
+TP4056 USB-C charger module with protection,1,Li-ion charging + over/under-voltage protection,8-12 (3-pack),Wire leads soldered to B+/B-/OUT+/OUT-
+Male header strips 2.54 mm,2 strips,Breadboard mounting,2-5,
+22 AWG hookup wire,-,TP4056 leads,5,
+Solderless breadboard + jumper wires,1 set,Prototyping,8-12,

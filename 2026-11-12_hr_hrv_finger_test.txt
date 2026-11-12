@@ -1,0 +1,78 @@
+Test:      hr_hrv (before parabolic interpolation was added)
+Date:      2026-11-12
+Setup:     Index fingertip resting on MAX30102, hand flat on table, seated, awake
+Reference: Whoop strap HR at the same time -> firmware BPM agreed within +/-3 BPM
+Notes:     The 1400-1440 ms rejected intervals are ~2x the normal IBI (one missed beat);
+           the artifact filter removed all of them before they reached RMSSD.
+
+Finger detected. Hold still...
+Beat  IBI: 740 ms  BPM: 81.1  RMSSD: collecting (0/10)
+Beat  IBI: 790 ms  BPM: 78.4  RMSSD: collecting (1/10)
+Rejected IBI: 1440 ms (artifact)
+Beat  IBI: 760 ms  BPM: 78.6  RMSSD: collecting (1/10)
+Beat  IBI: 830 ms  BPM: 76.9  RMSSD: collecting (2/10)
+Beat  IBI: 760 ms  BPM: 76.4  RMSSD: collecting (2/10)
+Beat  IBI: 760 ms  BPM: 77.2  RMSSD: collecting (3/10)
+Beat  IBI: 770 ms  BPM: 76.9  RMSSD: collecting (4/10)
+Beat  IBI: 720 ms  BPM: 79.7  RMSSD: collecting (5/10)
+Beat  IBI: 740 ms  BPM: 80.3  RMSSD: collecting (6/10)
+Beat  IBI: 760 ms  BPM: 80.3  RMSSD: collecting (7/10)
+Beat  IBI: 730 ms  BPM: 81.4  RMSSD: collecting (8/10)
+Beat  IBI: 760 ms  BPM: 80.3  RMSSD: collecting (9/10)
+Beat  IBI: 700 ms  BPM: 81.4  RMSSD: 40.2 ms
+Beat  IBI: 740 ms  BPM: 81.9  RMSSD: 40.2 ms
+Beat  IBI: 810 ms  BPM: 79.7  RMSSD: 43.5 ms
+Beat  IBI: 720 ms  BPM: 80.8  RMSSD: 48.7 ms
+Beat  IBI: 730 ms  BPM: 80.0  RMSSD: 47.0 ms
+Beat  IBI: 750 ms  BPM: 79.7  RMSSD: 45.7 ms
+Beat  IBI: 730 ms  BPM: 81.9  RMSSD: 45.7 ms
+Rejected IBI: 1400 ms (artifact)
+Beat  IBI: 700 ms  BPM: 82.5  RMSSD: 45.7 ms
+Beat  IBI: 700 ms  BPM: 83.3  RMSSD: 44.2 ms
+Beat  IBI: 700 ms  BPM: 84.8  RMSSD: 42.9 ms
+Beat  IBI: 720 ms  BPM: 85.1  RMSSD: 42.0 ms
+Beat  IBI: 670 ms  BPM: 86.0  RMSSD: 42.4 ms
+Beat  IBI: 700 ms  BPM: 86.0  RMSSD: 41.9 ms
+Beat  IBI: 720 ms  BPM: 85.4  RMSSD: 41.1 ms
+Rejected IBI: 1410 ms (artifact)
+Beat  IBI: 740 ms  BPM: 84.8  RMSSD: 41.1 ms
+Beat  IBI: 790 ms  BPM: 81.4  RMSSD: 41.6 ms
+Beat  IBI: 790 ms  BPM: 78.9  RMSSD: 40.6 ms
+Beat  IBI: 760 ms  BPM: 77.9  RMSSD: 40.3 ms
+Beat  IBI: 740 ms  BPM: 77.9  RMSSD: 39.6 ms
+Beat  IBI: 730 ms  BPM: 79.5  RMSSD: 38.9 ms
+Beat  IBI: 750 ms  BPM: 80.5  RMSSD: 38.4 ms
+Beat  IBI: 700 ms  BPM: 82.2  RMSSD: 38.9 ms
+Beat  IBI: 720 ms  BPM: 82.8  RMSSD: 38.4 ms
+Beat  IBI: 710 ms  BPM: 83.3  RMSSD: 37.8 ms
+Beat  IBI: 750 ms  BPM: 83.3  RMSSD: 37.4 ms
+Beat  IBI: 740 ms  BPM: 82.2  RMSSD: 35.2 ms
+Beat  IBI: 730 ms  BPM: 81.9  RMSSD: 35.2 ms
+Beat  IBI: 750 ms  BPM: 80.8  RMSSD: 35.4 ms
+Beat  IBI: 790 ms  BPM: 79.7  RMSSD: 34.9 ms
+Beat  IBI: 740 ms  BPM: 79.7  RMSSD: 35.9 ms
+Beat  IBI: 750 ms  BPM: 79.2  RMSSD: 35.8 ms
+Beat  IBI: 750 ms  BPM: 79.2  RMSSD: 35.4 ms
+Beat  IBI: 740 ms  BPM: 80.5  RMSSD: 35.0 ms
+Beat  IBI: 740 ms  BPM: 80.5  RMSSD: 33.2 ms
+Beat  IBI: 710 ms  BPM: 81.6  RMSSD: 32.9 ms
+Beat  IBI: 770 ms  BPM: 81.1  RMSSD: 32.2 ms
+Beat  IBI: 800 ms  BPM: 79.5  RMSSD: 28.2 ms
+Beat  IBI: 750 ms  BPM: 79.2  RMSSD: 29.6 ms
+Beat  IBI: 780 ms  BPM: 77.4  RMSSD: 29.9 ms
+Beat  IBI: 730 ms  BPM: 78.4  RMSSD: 31.3 ms
+Beat  IBI: 740 ms  BPM: 80.0  RMSSD: 31.3 ms
+Beat  IBI: 730 ms  BPM: 80.5  RMSSD: 31.1 ms
+Beat  IBI: 700 ms  BPM: 82.8  RMSSD: 30.3 ms
+Beat  IBI: 720 ms  BPM: 83.0  RMSSD: 30.0 ms
+Beat  IBI: 730 ms  BPM: 83.3  RMSSD: 29.8 ms
+Beat  IBI: 690 ms  BPM: 84.5  RMSSD: 29.3 ms
+Beat  IBI: 740 ms  BPM: 83.3  RMSSD: 30.7 ms
+Rejected IBI: 1440 ms (artifact)
+Beat  IBI: 720 ms  BPM: 83.3  RMSSD: 30.7 ms
+Beat  IBI: 770 ms  BPM: 82.2  RMSSD: 31.6 ms
+Beat  IBI: 760 ms  BPM: 80.3  RMSSD: 31.4 ms
+Beat  IBI: 750 ms  BPM: 80.0  RMSSD: 31.4 ms
+Beat  IBI: 750 ms  BPM: 79.2  RMSSD: 31.2 ms
+Rejected IBI: 540 ms (artifact)
+Finger removed.

@@ -1,0 +1,17 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+*.swp
+
+# Arduino build output
+build/
+*.hex
+*.bin
+*.elf
+*.zip
+
+# React Native (Phase 4)
+app/node_modules/
+app/ios/Pods/
+app/android/.gradle/
