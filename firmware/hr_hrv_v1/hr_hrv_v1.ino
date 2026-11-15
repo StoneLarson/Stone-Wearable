@@ -36,9 +36,24 @@ const unsigned int  SETTLE_SAMPLES   = 200;   // ignore first 2 s after finger l
 const float         MIN_IBI_MS       = 333;   // fastest accepted: 180 BPM
 const float         MAX_IBI_MS       = 1500;  // slowest accepted: 40 BPM
 const float         ENV_DECAY        = 0.995; // peak envelope decay per sample
-const float         THRESH_FRACTION  = 0.35;  // threshold = 35% of recent peak height
+const float         THRESH_FRACTION  = 0.50;  // threshold = 50% of recent peak height
 const float         MIN_THRESHOLD    = 5.0;   // floor so flat noise isn't counted
 const byte          BPM_AVG_N        = 4;     // average BPM over last 4 beats
+
+// Each pulse has a second, smaller bump 300-450 ms after the real beat: the
+// dicrotic notch, from the aortic valve closing. It clears a fixed 333 ms floor,
+// so every heartbeat gets counted twice and BPM reads double. The floor is
+// therefore scaled to the recent beat interval instead.
+const float REFRACTORY_FRACTION = 0.60;  // next beat must be >= 60% of recent IBI
+
+// A peak inside the refractory window is one of two things, told apart by height:
+// a dicrotic notch, which is well below the beat it follows, or a real beat
+// because the heart rate rose. Blocking on time alone would halve a rate that
+// genuinely doubled, so height decides. The height is compared against the peak
+// envelope, not an average of accepted peaks: once a notch is wrongly accepted,
+// an average of accepted peaks sags toward the notches and stops telling them
+// apart, while the envelope keeps tracking the true systolic height.
+const float DICROTIC_MAX_RATIO = 0.85;   // at or below this x envelope = notch
 
 // ---------- HRV settings ----------
 const byte  HRV_N             = 30;    // RMSSD over the last 30 successive differences
@@ -73,6 +88,17 @@ byte rejectCount = 0;
 float rmssd = 0;
 
 unsigned long lastStatusMs = 0;
+
+// Throw away the running averages and the HRV window. Called when the beat
+// pattern changes enough that the old intervals would poison the new ones.
+void restartAverages() {
+  ibiCount = 0;
+  ibiIdx = 0;
+  sqCount = 0;
+  sqIdx = 0;
+  prevValidIbi = 0;
+  rejectCount = 0;
+}
 
 void resetState() {
   fingerOn = false;
@@ -159,7 +185,26 @@ void processSample(long ir) {
   }
 
   float ibi = peakTime - lastBeatTime;
-  if (ibi < MIN_IBI_MS) return;            // too soon: noise, ignore it
+
+  if (ibi < MIN_IBI_MS) return;            // faster than 180 BPM: noise
+
+  // --- Refractory period: rejects the dicrotic notch ---
+  float minIbi = MIN_IBI_MS;
+  if (ibiCount > 0) {
+    float sum = 0;
+    for (byte i = 0; i < ibiCount; i++) sum += ibis[i];
+    float refractory = REFRACTORY_FRACTION * (sum / ibiCount);
+    if (refractory > minIbi) minIbi = refractory;
+  }
+  if (ibi < minIbi) {
+    if (s1 <= DICROTIC_MAX_RATIO * env) {
+      return;   // too small for a beat: dicrotic notch. Keep lastBeatTime so the
+                // next real beat is still measured from the last real one.
+    }
+    // Full height this soon means the rate itself rose. Take it, and drop the
+    // old averages so the faster rate isn't fought by its own refractory floor.
+    restartAverages();
+  }
   lastBeatTime = peakTime;
 
   if (ibi > MAX_IBI_MS) {                  // gap too long (missed beat)
@@ -184,10 +229,10 @@ void processSample(long ir) {
         }
         return;
       }
-      // Several in a row: heart rate really changed, so start the average over
-      ibiCount = 0;
-      ibiIdx = 0;
-      rejectCount = 0;
+      // Several in a row: heart rate really changed, so start the average over.
+      // The HRV window is flushed too, or differences measured across the old
+      // beat pattern would inflate RMSSD for the next 30 beats.
+      restartAverages();
     } else {
       rejectCount = 0;
     }
