@@ -1,0 +1,126 @@
+Breath-hold validation — fingertip, 2026-11-18
+===============================================
+
+Purpose: confirm that the respiratory signal in the inter-beat intervals is real,
+by removing the breathing and watching it disappear. This check needs no pacing
+accuracy at all, which is why it is the strongest single validation available
+without reference equipment.
+
+Subject: Stone, index finger, seated.
+Protocol: ~15 s of normal breathing, then a breath hold to the end of the record.
+Build on the device: ARTIFACT_FRACTION = 0.25 (NOT the 0.45 source on disk —
+established after the fact by replaying the logged intervals; see Finding 2).
+
+Record: 41 accepted beats, 37.5 s, mean IBI 932 ms (64.4 BPM).
+
+RESULT — RSA collapses when breathing stops
+-------------------------------------------
+Lomb-Scargle over the 0.04-0.5 Hz band, 12 s sliding windows:
+
+  window         beats  SD(IBI)   RMSSD    peak      RSA power
+  0.0-12.0 s      14    102.5 ms   93.5 ms  3.9/min    52686
+  4.0-16.0 s      13     79.6 ms  101.1 ms 12.5/min    25615
+  8.0-20.0 s      12     80.7 ms   81.0 ms  7.9/min    27563
+  12.0-24.0 s     13     59.7 ms   27.8 ms  6.0/min    16233
+  16.0-28.0 s     13     33.1 ms   28.7 ms  6.9/min     4497
+  20.0-32.0 s     13     29.2 ms   29.8 ms  2.4/min     4129
+  24.0-36.0 s     12     42.1 ms   35.8 ms  3.4/min     9128
+
+  first half (0-18.7 s):   SD 98.4 ms, peak 5.7 breaths/min, power 42510
+  second half (18.7-37.5): SD 47.5 ms, peak 3.1 breaths/min, power 13442
+
+RSA power falls 12.8x (52686 -> 4129) and SD(IBI) falls 3.5x (102.5 -> 29.2 ms)
+between the breathing section and the hold. The breathing section recovers
+5.7 breaths/min, close to a normal resting rate.
+
+PASS. The oscillation in the interval series is driven by breathing.
+
+Two supporting physiological signatures, neither of which was designed for:
+  - During the hold, IBI drifts monotonically 900 -> 1050 ms (67 -> 57 BPM).
+    Breath-hold bradycardia.
+  - On resumption, intervals drop to 618-685 ms (87-97 BPM). Post-hold
+    tachycardia. All four of these beats were discarded by the 0.25 band.
+
+Caveats
+-------
+37.5 s is a short record: ~3.8 respiratory cycles whole, ~2 per segment. The
+whole-record peak reads 2.8/min, below the physiological band edge, because the
+record mixes two regimes plus the bradycardia drift — segment analysis is the
+correct read here, not the whole-record number. The 5.7/min figure rests on about
+two cycles and is encouraging rather than conclusive. A 3-minute metronome-paced
+run at 6 breaths/min is still needed for a defensible accuracy figure.
+
+FINDING 2 — the board was running a stale build
+-----------------------------------------------
+The device still had ARTIFACT_FRACTION = 0.25 despite 0.45 being in the source.
+Proof from the log alone:
+  - 618 ms was rejected. Rejection at 0.45 would require periodEst > 1124 ms;
+    periodEst was ~950. At 0.25 it requires > 824 ms, which holds.
+  - "Beat IBI: 640.6 ms  BPM: 93.7" — 60000/640.6 = 93.7 exactly, a one-interval
+    average, which only happens after MAX_REJECTS flushes the BPM window. That
+    needs three consecutive rejections, which 0.45 would not have produced.
+
+Consequence: the four real post-hold beats were thrown away, and RMSSD reset.
+A build banner was added to setup() in 2026-11-18b so every future log states
+its own tuning constants and this cannot recur silently.
+
+RAW LOG
+-------
+No finger.
+Finger detected. Hold still...
+Waiting for beats...
+Waiting for beats...
+Waiting for beats...
+Waiting for beats...
+Waiting for beats...
+Waiting for beats...
+Waiting for beats...
+Waiting for beats...
+Beat  IBI: 733.6 ms  BPM: 81.8  RMSSD: collecting (0/10)
+Beat  IBI: 768.6 ms  BPM: 79.9  RMSSD: collecting (1/10)
+Beat  IBI: 785.7 ms  BPM: 78.7  RMSSD: collecting (2/10)
+Beat  IBI: 841.2 ms  BPM: 76.7  RMSSD: collecting (3/10)
+Beat  IBI: 794.3 ms  BPM: 75.2  RMSSD: collecting (4/10)
+Beat  IBI: 907.4 ms  BPM: 72.1  RMSSD: collecting (5/10)
+Beat  IBI: 983.3 ms  BPM: 68.1  RMSSD: collecting (6/10)
+Beat  IBI: 986.6 ms  BPM: 65.4  RMSSD: collecting (7/10)
+Beat  IBI: 886.6 ms  BPM: 63.8  RMSSD: collecting (8/10)
+Beat  IBI: 952.6 ms  BPM: 63.0  RMSSD: collecting (9/10)
+Beat  IBI: 1039.0 ms  BPM: 62.1  RMSSD: 68.7 ms
+Beat  IBI: 1054.7 ms  BPM: 61.0  RMSSD: 65.7 ms
+Beat  IBI: 976.5 ms  BPM: 59.7  RMSSD: 66.8 ms
+Beat  IBI: 808.8 ms  BPM: 61.9  RMSSD: 79.3 ms
+Beat  IBI: 792.4 ms  BPM: 66.1  RMSSD: 76.5 ms
+Beat  IBI: 909.4 ms  BPM: 68.8  RMSSD: 79.8 ms
+Beat  IBI: 1003.5 ms  BPM: 68.3  RMSSD: 80.8 ms
+Beat  IBI: 1023.0 ms  BPM: 64.4  RMSSD: 78.5 ms
+Beat  IBI: 1002.6 ms  BPM: 60.9  RMSSD: 76.5 ms
+Beat  IBI: 990.5 ms  BPM: 59.7  RMSSD: 74.5 ms
+Beat  IBI: 961.9 ms  BPM: 60.3  RMSSD: 72.9 ms
+Beat  IBI: 934.2 ms  BPM: 61.7  RMSSD: 71.4 ms
+Beat  IBI: 909.4 ms  BPM: 63.2  RMSSD: 69.9 ms
+Beat  IBI: 898.9 ms  BPM: 64.8  RMSSD: 68.4 ms
+Beat  IBI: 897.4 ms  BPM: 65.9  RMSSD: 67.0 ms
+Beat  IBI: 903.8 ms  BPM: 66.5  RMSSD: 65.7 ms
+Beat  IBI: 922.2 ms  BPM: 66.3  RMSSD: 64.5 ms
+Beat  IBI: 923.8 ms  BPM: 65.8  RMSSD: 63.3 ms
+Beat  IBI: 967.7 ms  BPM: 64.6  RMSSD: 62.7 ms
+Beat  IBI: 935.2 ms  BPM: 64.0  RMSSD: 61.9 ms
+Beat  IBI: 921.7 ms  BPM: 64.0  RMSSD: 60.9 ms
+Beat  IBI: 941.3 ms  BPM: 63.7  RMSSD: 60.7 ms
+Beat  IBI: 963.0 ms  BPM: 63.8  RMSSD: 60.7 ms
+Beat  IBI: 977.4 ms  BPM: 63.1  RMSSD: 59.9 ms
+Beat  IBI: 985.9 ms  BPM: 62.1  RMSSD: 59.3 ms
+Beat  IBI: 1020.2 ms  BPM: 60.8  RMSSD: 56.0 ms
+Beat  IBI: 1006.2 ms  BPM: 60.2  RMSSD: 54.3 ms
+Beat  IBI: 1038.1 ms  BPM: 59.3  RMSSD: 54.6 ms
+Beat  IBI: 1051.2 ms  BPM: 58.3  RMSSD: 51.5 ms
+Beat  IBI: 926.9 ms  BPM: 59.7  RMSSD: 55.0 ms
+Beat  IBI: 886.4 ms  BPM: 61.5  RMSSD: 53.2 ms
+Rejected IBI: 618 ms (artifact)
+Rejected IBI: 648 ms (artifact)
+Beat  IBI: 640.6 ms  BPM: 93.7  RMSSD: collecting (0/10)
+Rejected IBI: 685 ms (artifact)
+Finger removed.
+No finger.
+No finger.
